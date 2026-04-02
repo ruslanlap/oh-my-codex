@@ -1,201 +1,262 @@
 # oh-my-codex (OMX)
 
 <p align="center">
-  <img src="https://yeachan-heo.github.io/oh-my-codex-website/omx-character-nobg.png" alt="персонаж oh-my-codex" width="280">
+  <img src="https://yeachan-heo.github.io/oh-my-codex-website/omx-character-nobg.png" alt="oh-my-codex character" width="280">
   <br>
-  <em>Запускай Codex як зазвичай. Коли проєкт росте — OMX подбає про решту.</em>
+  <em>Ваш codex не самотній.</em>
 </p>
 
 [![npm version](https://img.shields.io/npm/v/oh-my-codex)](https://www.npmjs.com/package/oh-my-codex)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org)
-[![Discord](https://img.shields.io/discord/1452487457085063218?color=5865F2&logo=discord&logoColor=white&label=Discord)](https://discord.gg/PUwSMR9XNk)
 
-**Сайт:** https://yeachan-heo.github.io/oh-my-codex-website/  
-**Документація:** [Початок роботи](./docs/getting-started.html) · [Агенти](./docs/agents.html) · [Навички](./docs/skills.html) · [Інтеграції](./docs/integrations.html) · [Демо](./DEMO.md) · [Посібник з OpenClaw](./docs/openclaw-integration.md)
+> **[Вебсайт](https://yeachan-heo.github.io/oh-my-codex-website/)** | **[Документація](https://yeachan-heo.github.io/oh-my-codex-website/docs.html)** | **[Довідник CLI](https://yeachan-heo.github.io/oh-my-codex-website/docs.html#cli-reference)** | **[Робочі процеси](https://yeachan-heo.github.io/oh-my-codex-website/docs.html#workflows)** | **[Посібник з інтеграції OpenClaw](./docs/openclaw-integration.md)** | **[GitHub](https://github.com/Yeachan-Heo/oh-my-codex)** | **[npm](https://www.npmjs.com/package/oh-my-codex)**
 
-OMX — це шар робочих процесів для [OpenAI Codex CLI](https://github.com/openai/codex).
+Шар мультиагентної оркестрації для [OpenAI Codex CLI](https://github.com/openai/codex).
 
-Codex залишається двигуном, який виконує роботу. OMX надає йому кращий контекст, готові ролі та робочі процеси — щоб ви не починали з нуля кожну сесію. А саме:
-- краща сесія Codex з першого запуску
-- багаторазове використання ролей і завдань через ключові слова `$name`
-- готові робочі процеси: `$deep-interview`, `$ralplan`, `$team`, `$ralph`
-- плани, логи, пам'ять і стан зберігаються в `.omx/`
+## Що нового у v0.9.0 — Spark Initiative
 
-## Як почати
+Spark Initiative — це реліз, що підсилює нативний шлях дослідження та інспекції в OMX.
 
-Якщо ви хочете просто розпочати:
+- **Нативний harness для `omx explore`** — прискорює та посилює read-only дослідження репозиторію через Rust-шлях.
+- **`omx sparkshell`** — нативна операторська поверхня для інспекції зі стислими зведеннями довгого виводу та явним захопленням tmux-pane.
+- **Кросплатформні нативні release-артефакти** — шлях hydration для `omx-explore-harness`, `omx-sparkshell` та `native-release-manifest.json` тепер входить у release pipeline.
+- **Посилений CI/CD** — додано явне налаштування Rust toolchain у job `build`, а також `cargo fmt --check` і `cargo clippy -- -D warnings`.
 
-```bash
-npm install -g @openai/codex oh-my-codex
-omx setup
-omx --madmax --high
-```
+Див. також [release notes v0.9.0](./docs/release-notes-0.9.0.md) та [release body](./docs/release-body-0.9.0.md).
 
-Потім працюйте як зазвичай у Codex:
+## Перша сесія
+
+Всередині Codex:
 
 ```text
-$deep-interview "clarify the authentication change"
+$deep-interview "clarify the auth change"
 $ralplan "approve the auth plan and review tradeoffs"
 $ralph "carry the approved plan to completion"
 $team 3:executor "execute the approved plan in parallel"
 ```
 
-Це — основний шлях.
-Запустіть OMX, уточніть задачу за потреби, затвердіть план, а потім оберіть `$team` для координованого паралельного виконання або `$ralph` для послідовного циклу завершення з одним відповідальним.
-
-## Для чого потрібен OMX
-
-Використовуйте OMX, якщо вам подобається Codex і ви хочете кращий робочий досвід навколо нього:
-- стандартний робочий процес на основі `$deep-interview`, `$ralplan`, `$team` та `$ralph`
-- спеціалізовані ролі та допоміжні навички, коли завдання цього потребує
-- настанови проєкту через `AGENTS.md`
-- стійкий стан у `.omx/` для планів, логів, пам'яті та відстеження режимів
-
-Якщо вам потрібен чистий Codex без додаткових шарів — OMX вам, мабуть, не потрібен.
-
-## Швидкий старт
-
-### Вимоги
-
-- Node.js 20+
-- Codex CLI: `npm install -g @openai/codex`
-- Налаштована автентифікація Codex
-- `tmux` на macOS/Linux — якщо плануєте використовувати командний режим
-- `psmux` на Windows — якщо плануєте використовувати командний режим у Windows
-
-### Перша вдала сесія
-
-Запустіть OMX рекомендованим чином:
+З терміналу:
 
 ```bash
-omx --madmax --high
+omx team 4:executor "parallelize a multi-module refactor"
+omx team status <team-name>
+omx team shutdown <team-name>
 ```
-
-Потім спробуйте канонічний робочий процес:
-
-```text
-$deep-interview "clarify the authentication change"
-$ralplan "approve the safest implementation path"
-$ralph "carry the approved plan to completion"
-$team 3:executor "execute the approved plan in parallel"
-```
-
-Використовуйте `$team`, коли затверджений план потребує координованої паралельної роботи, або `$ralph`, коли один відповідальний має послідовно доводити задачу до завершення.
-
-## Проста ментальна модель
-
-OMX **не** замінює Codex.
-
-Він додає кращий робочий шар навколо нього:
-- **Codex** виконує основну роботу агента
-- **Ролі OMX** роблять корисні ролі багаторазовими
-- **Навички OMX** роблять типові робочі процеси багаторазовими
-- **`.omx/`** зберігає плани, логи, пам'ять і стан виконання
-
-Більшість користувачів мають сприймати OMX як **краще маршрутизування задач + кращий робочий процес + краще середовище виконання**, а не як командну панель для ручного управління протягом усього дня.
-
-## Почніть тут, якщо ви новачок
-
-1. Виконайте `omx setup`
-2. Запустіть `omx --madmax --high`
-3. Використовуйте `$deep-interview "..."`, коли запит або межі ще не прояснені
-4. Використовуйте `$ralplan "..."`, щоб затвердити план та розглянути компроміси
-5. Оберіть `$team` для координованого паралельного виконання або `$ralph` для послідовного циклу завершення
 
 ## Рекомендований робочий процес
 
-1. `$deep-interview` — прояснити обсяг, коли запит або межі ще розмиті.
-2. `$ralplan` — перетворити прояснений обсяг на затверджений план архітектури та реалізації.
-3. `$team` або `$ralph` — використовуйте `$team` для координованого паралельного виконання, або `$ralph`, якщо потрібен послідовний цикл завершення з одним відповідальним.
+1. `$deep-interview` — коли обсяг задачі або межі ще не прояснені.
+2. `$ralplan` — щоб перетворити уточнений обсяг на узгоджений план архітектури та реалізації.
+3. `$team` або `$ralph` — використовуйте `$team` для координованого паралельного виконання, а `$ralph` — для наполегливого циклу доведення до кінця і перевірки з одним відповідальним.
 
-## Типові поверхні під час сесії
+## Базова модель
 
-| Поверхня | Для чого |
-| --- | --- |
-| `$deep-interview "..."` | прояснення наміру, меж і не-цілей |
-| `$ralplan "..."` | затвердження плану реалізації та компромісів |
-| `$ralph "..."` | послідовний цикл завершення та верифікації |
-| `$team "..."` | координоване паралельне виконання, коли обсяг роботи достатній |
-| `/skills` | перегляд встановлених навичок та допоміжних інструментів |
+OMX встановлює та зв'язує наступні шари:
 
-## Розширене / для операторів
+```text
+User
+  -> Codex CLI
+    -> AGENTS.md (мозок оркестрації)
+    -> ~/.codex/prompts/*.md (каталог промптів агентів)
+    -> ~/.codex/skills/*/SKILL.md (каталог навичок)
+    -> ~/.codex/config.toml (функції, сповіщення, MCP)
+    -> .omx/ (стан виконання, пам'ять, плани, журнали)
+```
 
-Ці функції корисні, але вони не є основним шляхом для початку роботи.
-
-### Командний режим
-
-Використовуйте командний режим, коли конкретно потрібна стійка координація через tmux/worktree — не як спосіб за замовчуванням працювати з OMX.
+## Основні команди
 
 ```bash
-omx team 3:executor "fix the failing tests with verification"
+omx                # Запустити Codex (+ HUD в tmux за наявності)
+omx setup          # Встановити промпти/навички/конфіг за областю + .omx проєкту + AGENTS.md для обраної області
+omx doctor         # Діагностика встановлення/середовища виконання
+omx doctor --team  # Діагностика Team/swarm
+omx team ...       # Запуск/статус/відновлення/завершення робочих tmux
+omx status         # Показати активні режими
+omx cancel         # Скасувати активні режими виконання
+omx reasoning <mode> # low|medium|high|xhigh
+omx tmux-hook ...  # init|status|validate|test
+omx hooks ...      # init|status|validate|test (робочий процес розширень плагінів)
+omx hud ...        # --watch|--json|--preset
+omx help
+```
+
+## Розширення Hooks (Додаткова поверхня)
+
+OMX тепер включає `omx hooks` для створення шаблонів плагінів та валідації.
+
+- `omx tmux-hook` як і раніше підтримується і не змінений.
+- `omx hooks` є додатковим і не замінює робочі процеси tmux-hook.
+- Файли плагінів розташовуються в `.omx/hooks/*.mjs`.
+- Плагіни за замовчуванням вимкнені; увімкніть за допомогою `OMX_HOOK_PLUGINS=1`.
+
+Повний робочий процес розширень та модель подій описані в `docs/hooks-extension.md`.
+
+## Прапорці запуску
+
+```bash
+--yolo
+--high
+--xhigh
+--madmax
+--force
+--dry-run
+--verbose
+--scope <user|project>  # тільки для setup
+```
+
+`--madmax` відповідає Codex `--dangerously-bypass-approvals-and-sandbox`.
+Використовуйте тільки у довірених/зовнішніх sandbox-середовищах.
+
+### Політика workingDirectory MCP (опціональне посилення)
+
+За замовчуванням інструменти MCP state/memory/trace приймають `workingDirectory`, наданий стороною, що викликає.
+Щоб обмежити це, задайте список дозволених коренів:
+
+```bash
+export OMX_MCP_WORKDIR_ROOTS="/path/to/project:/path/to/another-root"
+```
+
+Під час встановлення значення `workingDirectory` за межами цих коренів будуть відхилені.
+
+## Codex-First управління промптами
+
+За замовчуванням OMX впроваджує:
+
+```text
+-c model_instructions_file="<cwd>/AGENTS.md"
+```
+
+Це об'єднує `AGENTS.md` з `CODEX_HOME` із проєктним `AGENTS.md` (якщо він є), а потім додає runtime-overlay.
+Розширює поведінку Codex, але не замінює/обходить основні системні політики Codex.
+
+Управління:
+
+```bash
+OMX_BYPASS_DEFAULT_SYSTEM_PROMPT=0 omx     # вимкнути впровадження AGENTS.md
+OMX_MODEL_INSTRUCTIONS_FILE=/path/to/instructions.md omx
+```
+
+## Командний режим
+
+Використовуйте командний режим для масштабної роботи, яка виграє від паралельних виконавців.
+
+Життєвий цикл:
+
+```text
+start -> assign scoped lanes -> monitor -> verify terminal tasks -> shutdown
+```
+
+Операційні команди:
+
+```bash
+omx team <args>
 omx team status <team-name>
 omx team resume <team-name>
 omx team shutdown <team-name>
 ```
 
-### Setup, doctor та HUD
+Важливе правило: не завершуйте роботу, поки задачі знаходяться у стані `in_progress`, якщо тільки не перериваєте виконання.
 
-- `omx setup` — встановлює промпти, навички, конфігурацію та структуру AGENTS
-- `omx doctor` — перевіряє встановлення, коли щось працює не так
-- `omx hud --watch` — моніторинг стану та прогресу, не основний робочий процес
+### Політика завершення команди (Team shutdown policy)
 
-### Explore та sparkshell
+Використовуйте `omx team shutdown <team-name>` після того, як команда досягла кінцевого стану.
+Очищення команди тепер слідує одним окремим шляхом; застаріла обробка вимкнення пов'язаних Ralph більше не є самостійним публічним робочим процесом.
 
-- `omx explore --prompt "..."` — пошук по репозиторію тільки для читання
-- `omx sparkshell <command>` — інспекція через оболонку та обмежена верифікація
-
-Приклади:
+Вибір Worker CLI для робітників команди:
 
 ```bash
-omx explore --prompt "find where team state is written"
-omx sparkshell git status
-omx sparkshell --tmux-pane %12 --tail-lines 400
+OMX_TEAM_WORKER_CLI=auto    # за замовчуванням; використовує claude, якщо worker --model містить "claude"
+OMX_TEAM_WORKER_CLI=codex   # примусово Codex CLI
+OMX_TEAM_WORKER_CLI=claude  # примусово Claude CLI
+OMX_TEAM_WORKER_CLI_MAP=codex,codex,claude,claude  # CLI для кожного робітника (довжина=1 або кількість робітників)
+OMX_TEAM_AUTO_INTERRUPT_RETRY=0  # опціонально: вимкнути адаптивний відкат queue->resend
 ```
 
-### Вимоги до платформи для командного режиму
+Примітки:
+- Аргументи запуску робітників, як і раніше, передаються через `OMX_TEAM_WORKER_LAUNCH_ARGS`.
+- `OMX_TEAM_WORKER_CLI_MAP` перевизначає `OMX_TEAM_WORKER_CLI` для вибору на рівні робітника.
+- Відправка тригерів за замовчуванням використовує адаптивні повторні спроби (queue/submit, потім безпечний відкат clear-line+resend за необхідності).
+- У режимі Claude worker OMX запускає робітників як звичайний `claude` (без додаткових аргументів) і ігнорує явні перевизначення `--model` / `--config` / `--effort`, щоб Claude використовував стандартний `settings.json`.
 
-`omx team` потребує tmux-сумісного бекенду:
+## Що записує `omx setup`
 
-| Платформа | Встановлення |
-| --- | --- |
-| macOS | `brew install tmux` |
-| Ubuntu/Debian | `sudo apt install tmux` |
-| Fedora | `sudo dnf install tmux` |
-| Arch | `sudo pacman -S tmux` |
-| Windows | `winget install psmux` |
-| Windows (WSL2) | `sudo apt install tmux` |
+- `.omx/setup-scope.json` (збережена область встановлення)
+- Установки залежно від області:
+  - `user`: `~/.codex/prompts/`, `~/.codex/skills/`, `~/.codex/config.toml`, `~/.omx/agents/`, `~/.codex/AGENTS.md`
+  - `project`: `./.codex/prompts/`, `./.codex/skills/`, `./.codex/config.toml`, `./.omx/agents/`, `./AGENTS.md`
+- Поведінка під час запуску: якщо збережена область — `project`, `omx` автоматично використовує `CODEX_HOME=./.codex` (якщо `CODEX_HOME` ще не задано).
+- Інструкції запуску об'єднують `~/.codex/AGENTS.md` (або `CODEX_HOME/AGENTS.md`, якщо шлях перевизначено) з проєктним `./AGENTS.md`, а потім додають runtime-overlay.
+- Існуючі файли `AGENTS.md` ніколи не перезаписуються мовчки: в інтерактивному TTY setup запитує перед заміною, а в неінтерактивному режимі пропускає заміну без `--force` (перевірки безпеки активних сесій залишаються в силі).
+- Оновлення `config.toml` (для обох областей):
+  - `notify = ["node", "..."]`
+  - `model_reasoning_effort = "high"`
+  - `developer_instructions = "..."`
+  - `[features] multi_agent = true, child_agents_md = true`
+  - Записи MCP-серверів (`omx_state`, `omx_memory`, `omx_code_intel`, `omx_trace`)
+  - `[tui] status_line`
+- `AGENTS.md` для обраної області
+- Директорії `.omx/` та конфігурація HUD
 
-## Відомі проблеми
+## Агенти та навички
 
-### Intel Mac: високе навантаження CPU через `syspolicyd` / `trustd` під час запуску
+- Промпти: `prompts/*.md` (встановлюються у `~/.codex/prompts/` для `user`, `./.codex/prompts/` для `project`)
+- Навички: `skills/*/SKILL.md` (встановлюються у `~/.codex/skills/` для `user`, `./.codex/skills/` для `project`)
 
-На деяких Intel Mac запуск OMX — особливо з `--madmax --high` — може спричинити стрибок навантаження CPU через `syspolicyd` та `trustd`, поки macOS Gatekeeper перевіряє багато одночасних запусків процесів.
+Приклади:
+- Агенти: `architect`, `planner`, `executor`, `debugger`, `verifier`, `security-reviewer`
+- Навички: `deep-interview`, `ralplan`, `team`, `ralph`, `plan`, `cancel`
 
-Якщо це трапляється:
-- `xattr -dr com.apple.quarantine $(which omx)`
-- додайте ваш термінал до списку Developer Tools у налаштуваннях безпеки macOS
-- зменшіть паралелізм, наприклад, уникаючи `--madmax --high`
+## Структура проєкту
+
+```text
+oh-my-codex/
+  bin/omx.js
+  src/
+    cli/
+    team/
+    mcp/
+    hooks/
+    hud/
+    config/
+    modes/
+    notifications/
+    verification/
+  prompts/
+  skills/
+  templates/
+  scripts/
+```
+
+## Розробка
+
+```bash
+git clone https://github.com/Yeachan-Heo/oh-my-codex.git
+cd oh-my-codex
+npm install
+npm run build
+npm test
+```
 
 ## Історія Pull Request
 
-Цей проєкт побудований спільнотою. Ось як виглядає типовий процес внеску через Pull Request:
+Цей проєкт розвивається спільнотою. Ось як виглядає типовий процес внеску через Pull Request:
 
 ### Як зробити внесок
 
 1. **Форкніть репозиторій** — натисніть кнопку «Fork» на сторінці [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex).
 2. **Створіть гілку** — `git checkout -b feature/my-awesome-feature`
 3. **Внесіть зміни** — дотримуйтесь стилю коду проєкту та конвенцій з `CONTRIBUTING.md`.
-4. **Напишіть тести** — переконайтесь, що `npm test` проходить успішно.
+4. **Напишіть тести** — переконайтеся, що `npm test` проходить успішно.
 5. **Зробіть коміт** — використовуйте зрозумілі повідомлення комітів.
-6. **Надішліть PR** — опишіть, що змінилось, чому, та додайте скріншоти за потреби.
+6. **Надішліть PR** — опишіть, що змінилося, чому, та додайте скріншоти за потреби.
 
 ### Що відбувається після відкриття PR
 
 - **Автоматичні перевірки** — CI запускає лінтер, перевірку типів та тести.
-- **Рев'ю коду** — мейнтейнери переглядають зміни, можуть залишити коментарі або запитати правки.
-- **Ітерації** — автор вносить зміни відповідно до фідбеку.
-- **Мердж** — після затвердження PR зливають у головну гілку.
+- **Рев'ю коду** — мейнтейнери переглядають зміни, можуть залишити коментарі або попросити про правки.
+- **Ітерації** — автор вносить зміни відповідно до відгуків.
+- **Мердж** — після затвердження PR зливається у головну гілку.
 
 ### Поради для успішного PR
 
@@ -206,14 +267,23 @@ omx sparkshell --tmux-pane %12 --tail-lines 400
 
 ## Документація
 
-- [Початок роботи](./docs/getting-started.html)
-- [Посібник з демо](./DEMO.md)
-- [Каталог агентів](./docs/agents.html)
-- [Довідник навичок](./docs/skills.html)
-- [Інтеграції](./docs/integrations.html)
-- [Посібник з OpenClaw / шлюзу сповіщень](./docs/openclaw-integration.md)
-- [Внески](./CONTRIBUTING.md)
-- [Журнал змін](./CHANGELOG.md)
+- **[Повна документація](https://yeachan-heo.github.io/oh-my-codex-website/docs.html)** — Повний посібник
+- **[Довідник CLI](https://yeachan-heo.github.io/oh-my-codex-website/docs.html#cli-reference)** — Всі команди `omx`, прапорці та інструменти
+- **[Посібник зі сповіщень](https://yeachan-heo.github.io/oh-my-codex-website/docs.html#notifications)** — Налаштування Discord, Telegram, Slack та webhook
+- **[Рекомендовані робочі процеси](https://yeachan-heo.github.io/oh-my-codex-website/docs.html#workflows)** — Перевірені в бою ланцюжки навичок для типових задач
+- **[Примітки до випусків](https://yeachan-heo.github.io/oh-my-codex-website/docs.html#release-notes)** — Що нового в кожній версії
+
+## Примітки
+
+- Повний журнал змін: `CHANGELOG.md`
+- Посібник з міграції (після v0.4.4 mainline): `docs/migration-mainline-post-v0.4.4.md`
+- Нотатки про покриття та паритет: `COVERAGE.md`
+- Робочий процес розширень hook: `docs/hooks-extension.md`
+- Деталі встановлення та участі: `CONTRIBUTING.md`
+
+## Подяки
+
+Натхненно проєктом [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode), адаптовано для Codex CLI.
 
 ## Мови
 
@@ -233,17 +303,6 @@ omx sparkshell --tmux-pane %12 --tail-lines 400
 - [Ελληνικά](./README.el.md)
 - [Polski](./README.pl.md)
 - [Українська](./README.uk.md)
-
-## Учасники
-
-| Роль | Ім'я | GitHub |
-| --- | --- | --- |
-| Творець та лід | Yeachan Heo | [@Yeachan-Heo](https://github.com/Yeachan-Heo) |
-| Мейнтейнер | HaD0Yun | [@HaD0Yun](https://github.com/HaD0Yun) |
-
-## Історія зірок
-
-[![Star History Chart](https://api.star-history.com/svg?repos=Yeachan-Heo/oh-my-codex&type=date&legend=top-left)](https://www.star-history.com/#Yeachan-Heo/oh-my-codex&type=date&legend=top-left)
 
 ## Ліцензія
 
